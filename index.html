@@ -344,24 +344,50 @@ function buildReview() {
     </div>`;
 }
 
+// ⚠️ Replace this with your deployed Apps Script Web App URL
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
 function submitReferral() {
-  const id = 'XTM-REF-' + String(Math.floor(1000+Math.random()*9000));
-  const referral = {
-    id, empName:v('emp-name'), empEmail:v('emp-email'), empId:v('emp-id'),
+  const payload = {
+    empName:v('emp-name'), empEmail:v('emp-email'), empId:v('emp-id'),
     candName:v('cand-name'), candEmail:v('cand-email'), candPhone:v('cand-phone'),
     position:v('position'), company:v('cand-company'), exp:v('cand-exp'),
-    linkedin:v('cand-linkedin'), notes:v('ref-notes'), status:'New',
-    date:new Date().toISOString().split('T')[0],
+    linkedin:v('cand-linkedin'), notes:v('ref-notes'),
     resumeName:selectedFile?selectedFile.name:''
   };
+
   document.getElementById('loader').classList.add('show');
-  setTimeout(() => {
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      // Also save locally for HR dashboard
+      const referral = { ...payload, id: data.refId, status: 'New', date: new Date().toISOString().split('T')[0] };
+      const refs = getReferrals(); refs.unshift(referral); saveReferrals(refs);
+      document.getElementById('loader').classList.remove('show');
+      document.getElementById('success-cname').textContent = payload.candName;
+      document.getElementById('success-ref-id').textContent = data.refId;
+      showSuccess(true);
+    } else {
+      throw new Error(data.error || 'Submission failed');
+    }
+  })
+  .catch(err => {
+    // Fallback: save locally even if Apps Script fails
+    console.warn('Apps Script error:', err);
+    const id = 'XTM-REF-' + String(Math.floor(1000+Math.random()*9000));
+    const referral = { ...payload, id, status: 'New', date: new Date().toISOString().split('T')[0] };
     const refs = getReferrals(); refs.unshift(referral); saveReferrals(refs);
     document.getElementById('loader').classList.remove('show');
-    document.getElementById('success-cname').textContent = referral.candName;
+    document.getElementById('success-cname').textContent = payload.candName;
     document.getElementById('success-ref-id').textContent = id;
     showSuccess(true);
-  }, 1600);
+    showToast('Saved locally. Email notification may be delayed.', '');
+  });
 }
 
 function resetForm() {
