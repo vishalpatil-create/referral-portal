@@ -237,7 +237,7 @@ const REFERRALS_KEY = 'xtm_referrals';
 
 function getPositions() {
   const d = localStorage.getItem(POSITIONS_KEY);
-  const p = d ? JSON.parse(d) : ['AI Operator (AI PO)','Full Stack Developer','React Developer','Node.js Developer','DevOps Engineer','Business Analyst','Project Manager','UI/UX Designer','Data Analyst','QA Engineer','Sales Executive','HR Executive'];
+  const p = d ? JSON.parse(d) : ['AI Operator (AI PO)'];
   if (!p.includes('AI Operator (AI PO)')) { p.unshift('AI Operator (AI PO)'); localStorage.setItem(POSITIONS_KEY, JSON.stringify(p)); }
   return p;
 }
