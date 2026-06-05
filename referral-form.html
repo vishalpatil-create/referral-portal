@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>XTransMatrix — Refer a Candidate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --blue:#3856DB;--blue-dark:#2a42c0;--blue-light:#5b75e8;--blue-pale:#eef1fd;
+  --green:#829C4B;--green-dark:#6a8039;--green-pale:#f0f4e8;
+  --ink:#0d1526;--ink-3:#3a4a6b;--muted:#7a8aaa;
+  --border:#e2e7f0;--surface:#f7f9fc;
+  --radius:14px;--shadow:0 4px 24px rgba(56,86,219,0.08);--shadow-lg:0 12px 48px rgba(56,86,219,0.14);
+  --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min-height:100vh;}
+
+/* TOPBAR */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:64px;
+  background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 32px;
+}
+.topbar-logo{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:800;font-size:18px;color:var(--blue);text-decoration:none;}
+.logo-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--blue-light));display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:800;}
+.topbar-tagline{font-size:13px;color:var(--muted);font-weight:500;}
+
+/* PAGES */
+.page{display:none;padding-top:64px;min-height:100vh;}
+.page.active{display:block;}
+
+/* FORM */
+#page-form{background:var(--surface);}
+.form-container{max-width:780px;margin:0 auto;padding:48px 24px 80px;}
+.form-header{margin-bottom:40px;}
+.form-header h2{font-family:var(--font-head);font-size:36px;font-weight:800;color:var(--ink);margin-bottom:8px;}
+.form-header p{color:var(--muted);font-size:16px;}
+
+/* Steps */
+.steps{display:flex;align-items:center;margin-bottom:40px;}
+.step{display:flex;align-items:center;gap:10px;flex:1;}
+.step:last-child{flex:none;}
+.step-num{width:36px;height:36px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted);background:white;flex-shrink:0;transition:all 0.3s;}
+.step.done .step-num{background:var(--green);border-color:var(--green);color:white;}
+.step.active .step-num{background:var(--blue);border-color:var(--blue);color:white;}
+.step-label{font-size:13px;font-weight:600;color:var(--muted);}
+.step.active .step-label{color:var(--blue);}
+.step.done .step-label{color:var(--green);}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 10px;}
+.step-line.done{background:var(--green);}
+
+.form-card{background:white;border-radius:20px;border:1px solid var(--border);overflow:hidden;}
+.form-section{display:none;padding:36px;}
+.form-section.active{display:block;}
+.form-section-title{font-family:var(--font-head);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.form-section-sub{font-size:14px;color:var(--muted);margin-bottom:28px;}
+
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.field-grid.single{grid-template-columns:1fr;}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:13px;font-weight:600;color:var(--ink-3);}
+.req{color:#ef4444;}
+.field input,.field textarea,.field select{padding:12px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);font-family:var(--font-body);font-size:14px;color:var(--ink);transition:all 0.2s;outline:none;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 4px rgba(56,86,219,0.08);}
+.field textarea{resize:vertical;min-height:100px;}
+.field .err-msg{font-size:12px;color:#ef4444;display:none;}
+.field.has-error .err-msg{display:block;}
+.field.has-error input,.field.has-error textarea,.field.has-error select{border-color:#ef4444;}
+
+.dropzone{border:2px dashed var(--border);border-radius:14px;padding:36px 24px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface);position:relative;}
+.dropzone:hover,.dropzone.drag{border-color:var(--blue);background:var(--blue-pale);}
+.dropzone-icon{font-size:36px;margin-bottom:12px;}
+.dropzone-text{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.dropzone-sub{font-size:12px;color:var(--muted);}
+.file-chosen{display:none;align-items:center;gap:12px;background:var(--green-pale);border:1.5px solid var(--green);border-radius:10px;padding:14px 16px;margin-top:10px;}
+.file-chosen.show{display:flex;}
+.file-chosen-name{font-size:13px;font-weight:600;color:var(--green-dark);flex:1;}
+.file-remove{background:none;border:none;color:#ef4444;cursor:pointer;font-size:18px;}
+
+.form-nav{display:flex;justify-content:space-between;align-items:center;padding:24px 36px;border-top:1px solid var(--border);background:var(--surface);}
+.form-nav-info{font-size:13px;color:var(--muted);}
+.mt-4{margin-top:16px;}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:10px;border:none;font-family:var(--font-body);font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-primary{background:var(--blue);color:white;}
+.btn-primary:hover{background:var(--blue-dark);transform:translateY(-1px);box-shadow:0 8px 24px rgba(56,86,219,0.3);}
+.btn-secondary{background:white;color:var(--ink);border:1px solid var(--border);}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);}
+.btn-green{background:var(--green);color:white;}
+.btn-green:hover{background:var(--green-dark);transform:translateY(-1px);}
+
+/* SUCCESS */
+#page-success{background:linear-gradient(160deg,#f0f3ff,#f7f9fc);}
+.success-container{max-width:520px;margin:0 auto;padding:80px 24px;text-align:center;}
+.success-icon-wrap{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--green),#a3c06a);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 32px;box-shadow:0 16px 40px rgba(130,156,75,0.3);animation:successPop 0.5s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes successPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-container h2{font-family:var(--font-head);font-size:38px;font-weight:800;color:var(--ink);margin-bottom:12px;}
+.success-container p{font-size:16px;color:var(--muted);line-height:1.6;margin-bottom:32px;}
+.success-ref{background:white;border-radius:14px;border:1px solid var(--border);padding:20px 24px;display:inline-flex;align-items:center;gap:12px;margin-bottom:32px;}
+.ref-label{font-size:12px;color:var(--muted);font-weight:600;}
+.ref-id{font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--blue);}
+.success-note{background:var(--blue-pale);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--blue);font-weight:500;margin-bottom:32px;border:1px solid rgba(56,86,219,0.15);}
+.success-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+
+/* LOADER & TOAST */
+#loader{position:fixed;inset:0;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+#loader.show{display:flex;}
+.spinner{width:44px;height:44px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--blue);animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#loader p{font-size:15px;font-weight:600;color:var(--ink-3);}
+#toast{position:fixed;bottom:28px;right:28px;z-index:999;background:var(--ink);color:white;border-radius:12px;padding:14px 20px;font-size:14px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.25);transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.3,0.64,1);max-width:360px;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.success{background:var(--green);}
+#toast.error{background:#ef4444;}
+
+@media(max-width:768px){
+  .field-grid{grid-template-columns:1fr;}
+  #topbar{padding:0 16px;}
+  .form-container{padding:32px 16px 60px;}
+  .form-section{padding:24px 20px;}
+  .form-nav{padding:20px;}
+}
+</style>
+</head>
+<body>
+
+<nav id="topbar">
+  <div class="topbar-logo">
+    <div class="logo-mark">X</div>
+    XTransMatrix
+  </div>
+  <div class="topbar-tagline">Employee Referral Program</div>
+</nav>
+
+<div id="loader"><div class="spinner"></div><p>Submitting your referral…</p></div>
+<div id="toast"></div>
+
+<!-- REFERRAL FORM -->
+<div class="page active" id="page-form">
+  <div class="form-container">
+    <div class="form-header">
+      <h2>Refer a Candidate</h2>
+      <p>Know someone great? Refer them in under 2 minutes. HR will be notified immediately.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step active" data-step="1"><div class="step-num">1</div><div class="step-label">Candidate</div></div>
+      <div class="step-line" id="line-1-2"></div>
+      <div class="step" data-step="2"><div class="step-num">2</div><div class="step-label">Your Info</div></div>
+      <div class="step-line" id="line-2-3"></div>
+      <div class="step" data-step="3"><div class="step-num">3</div><div class="step-label">Review</div></div>
+    </div>
+
+    <div class="form-card">
+      <!-- Step 1: Candidate -->
+      <div class="form-section active" id="fsec-1">
+        <div class="form-section-title">Candidate Information</div>
+        <div class="form-section-sub">Tell us about the person you're referring to XTransMatrix.</div>
+        <div class="field-grid">
+          <div class="field" id="f-cname"><label>Candidate Name <span class="req">*</span></label><input type="text" id="cand-name" placeholder="e.g. Ravi Menon"/><div class="err-msg">Please enter the candidate's name.</div></div>
+          <div class="field" id="f-cemail"><label>Candidate Email <span class="req">*</span></label><input type="email" id="cand-email" placeholder="candidate@email.com"/><div class="err-msg">Please enter a valid email address.</div></div>
+          <div class="field" id="f-cphone"><label>Phone Number <span class="req">*</span></label><input type="tel" id="cand-phone" placeholder="+91 98765 43210"/><div class="err-msg">Please enter a valid phone number.</div></div>
+          <div class="field"><label>Current Company</label><input type="text" id="cand-company" placeholder="e.g. Infosys Ltd."/></div>
+          <div class="field"><label>Years of Experience</label><input type="number" id="cand-exp" placeholder="e.g. 4" min="0" max="40"/></div>
+          <div class="field"><label>LinkedIn Profile URL</label><input type="url" id="cand-linkedin" placeholder="https://linkedin.com/in/…"/></div>
+        </div>
+        <div class="field-grid single mt-4">
+          <div class="field" id="f-resume">
+            <label>Resume <span class="req">*</span></label>
+            <div class="dropzone" id="dropzone" onclick="document.getElementById('resume-file').click()">
+              <div class="dropzone-icon">📄</div>
+              <div class="dropzone-text">Drop resume here or click to upload</div>
+              <div class="dropzone-sub">PDF or DOCX · Max 5MB</div>
+              <input type="file" id="resume-file" accept=".pdf,.docx" style="display:none"/>
+            </div>
+            <div class="file-chosen" id="file-chosen"><span>📎</span><span class="file-chosen-name" id="file-name-display"></span><button class="file-remove" onclick="removeFile(event)">×</button></div>
+            <div class="err-msg">Please upload the candidate's resume.</div>
+          </div>
+          <div class="field"><label>Why should we consider this candidate?</label><textarea id="ref-notes" placeholder="Share why this person would be a great fit for XTransMatrix…"></textarea></div>
+        </div>
+      </div>
+
+      <!-- Step 2: Referrer -->
+      <div class="form-section" id="fsec-2">
+        <div class="form-section-title">Your Information</div>
+        <div class="form-section-sub">Almost done! Tell us who you are so HR can follow up with you.</div>
+        <div class="field-grid">
+          <div class="field" id="f-empname"><label>Your Name <span class="req">*</span></label><input type="text" id="emp-name" placeholder="e.g. Priya Sharma"/><div class="err-msg">Please enter your name.</div></div>
+          <div class="field" id="f-empemail"><label>Your Work Email <span class="req">*</span></label><input type="email" id="emp-email" placeholder="you@xtransmatrix.com"/><div class="err-msg">Please enter a valid email address.</div></div>
+          <div class="field"><label>Employee ID <span style="color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="emp-id" placeholder="e.g. XTM-0042"/></div>
+          <div class="field" id="f-position"><label>Position Referring For <span class="req">*</span></label><select id="position"><option value="">Select a position…</option></select><div class="err-msg">Please select a position.</div></div>
+        </div>
+      </div>
+
+      <!-- Step 3: Review -->
+      <div class="form-section" id="fsec-3">
+        <div class="form-section-title">Review Your Referral</div>
+        <div class="form-section-sub">Everything look good? Hit submit — HR will be notified instantly.</div>
+        <div id="review-content"></div>
+      </div>
+
+      <div class="form-nav">
+        <div><button class="btn btn-secondary" id="btn-back" onclick="formBack()" style="display:none">← Back</button></div>
+        <div class="form-nav-info" id="form-step-info">Step 1 of 3</div>
+        <div>
+          <button class="btn btn-primary" id="btn-next" onclick="formNext()">Next →</button>
+          <button class="btn btn-green" id="btn-submit" onclick="submitReferral()" style="display:none">🚀 Submit Referral</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="page" id="page-success">
+  <div class="success-container">
+    <div class="success-icon-wrap">✓</div>
+    <h2>Referral Submitted!</h2>
+    <p>Thank you for referring <strong id="success-cname"></strong>. Our HR team has been notified and will review the profile shortly.</p>
+    <div class="success-ref">
+      <div><div class="ref-label">Your Reference ID</div><div class="ref-id" id="success-ref-id">XTM-REF-0000</div></div>
+    </div>
+    <div class="success-note">📬 Save your Reference ID to track the status of your referral with HR.</div>
+    <div class="success-actions">
+      <button class="btn btn-primary" onclick="showSuccess(false)">+ Refer Another Person</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const POSITIONS_KEY = 'xtm_positions';
+const REFERRALS_KEY = 'xtm_referrals';
+
+function getPositions() {
+  const d = localStorage.getItem(POSITIONS_KEY);
+  const p = d ? JSON.parse(d) : ['AI Operator (AI PO)','Full Stack Developer','React Developer','Node.js Developer','DevOps Engineer','Business Analyst','Project Manager','UI/UX Designer','Data Analyst','QA Engineer','Sales Executive','HR Executive'];
+  if (!p.includes('AI Operator (AI PO)')) { p.unshift('AI Operator (AI PO)'); localStorage.setItem(POSITIONS_KEY, JSON.stringify(p)); }
+  return p;
+}
+function getReferrals() { const d = localStorage.getItem(REFERRALS_KEY); return d ? JSON.parse(d) : []; }
+function saveReferrals(r) { localStorage.setItem(REFERRALS_KEY, JSON.stringify(r)); }
+
+let currentStep = 1;
+const totalSteps = 3;
+let selectedFile = null;
+
+function showSuccess(show) {
+  document.getElementById('page-form').classList.toggle('active', !show);
+  document.getElementById('page-success').classList.toggle('active', show);
+  if (!show) { resetForm(); window.scrollTo(0,0); }
+}
+
+function populatePositions() {
+  const sel = document.getElementById('position');
+  sel.innerHTML = '<option value="">Select a position…</option>';
+  getPositions().forEach(p => { const o = document.createElement('option'); o.value=p; o.textContent=p; sel.appendChild(o); });
+}
+
+function updateStepUI() {
+  document.querySelectorAll('.step[data-step]').forEach(s => {
+    const n = parseInt(s.dataset.step);
+    s.classList.remove('active','done');
+    if (n < currentStep) s.classList.add('done');
+    else if (n === currentStep) s.classList.add('active');
+  });
+  document.getElementById('line-1-2').classList.toggle('done', currentStep > 1);
+  document.getElementById('line-2-3').classList.toggle('done', currentStep > 2);
+  document.getElementById('form-step-info').textContent = `Step ${currentStep} of ${totalSteps}`;
+  document.getElementById('btn-back').style.display = currentStep > 1 ? 'inline-flex' : 'none';
+  document.getElementById('btn-next').style.display = currentStep < totalSteps ? 'inline-flex' : 'none';
+  document.getElementById('btn-submit').style.display = currentStep === totalSteps ? 'inline-flex' : 'none';
+  document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('fsec-' + currentStep).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function validateField(id, wrapId, msg) {
+  const el=document.getElementById(id), w=document.getElementById(wrapId);
+  if (!el.value.trim()) { w.classList.add('has-error'); w.querySelector('.err-msg').textContent=msg; return false; }
+  w.classList.remove('has-error'); return true;
+}
+function validateEmail(id, wrapId) {
+  const el=document.getElementById(id), w=document.getElementById(wrapId);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) { w.classList.add('has-error'); w.querySelector('.err-msg').textContent='Please enter a valid email address.'; return false; }
+  w.classList.remove('has-error'); return true;
+}
+function validatePhone(id, wrapId) {
+  const el=document.getElementById(id), w=document.getElementById(wrapId);
+  if (el.value.replace(/[\s\-\(\)]/g,'').length < 7) { w.classList.add('has-error'); w.querySelector('.err-msg').textContent='Please enter a valid phone number.'; return false; }
+  w.classList.remove('has-error'); return true;
+}
+function validateSelect(id, wrapId) {
+  const el=document.getElementById(id), w=document.getElementById(wrapId);
+  if (!el.value) { w.classList.add('has-error'); w.querySelector('.err-msg').textContent='Please select a position.'; return false; }
+  w.classList.remove('has-error'); return true;
+}
+function validateFile() {
+  const w=document.getElementById('f-resume');
+  if (!selectedFile) { w.classList.add('has-error'); w.querySelector('.err-msg').textContent="Please upload the candidate's resume."; return false; }
+  w.classList.remove('has-error'); return true;
+}
+
+function validateStep(step) {
+  let ok = true;
+  if (step === 1) { ok=validateField('cand-name','f-cname',"Please enter the candidate's name.")&&ok; ok=validateEmail('cand-email','f-cemail')&&ok; ok=validatePhone('cand-phone','f-cphone')&&ok; ok=validateFile()&&ok; }
+  if (step === 2) { ok=validateField('emp-name','f-empname','Please enter your name.')&&ok; ok=validateEmail('emp-email','f-empemail')&&ok; ok=validateSelect('position','f-position')&&ok; }
+  return ok;
+}
+
+function formNext() { if (!validateStep(currentStep)) return; if (currentStep===2) buildReview(); currentStep=Math.min(currentStep+1,totalSteps); updateStepUI(); }
+function formBack() { currentStep=Math.max(currentStep-1,1); updateStepUI(); }
+
+function v(id) { return document.getElementById(id).value; }
+function esc(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;') : ''; }
+
+function buildReview() {
+  document.getElementById('review-content').innerHTML = `
+    <div style="display:grid;gap:16px">
+      <div style="background:var(--green-pale);border-radius:12px;padding:18px 20px;border:1px solid rgba(130,156,75,0.2)">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green-dark);margin-bottom:10px">Candidate Information</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><div style="font-size:11px;color:var(--muted)">Name</div><div style="font-size:14px;font-weight:600">${esc(v('cand-name'))}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Email</div><div style="font-size:14px;font-weight:600">${esc(v('cand-email'))}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Phone</div><div style="font-size:14px;font-weight:600">${esc(v('cand-phone'))}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Company</div><div style="font-size:14px;font-weight:600">${esc(v('cand-company'))||'—'}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Experience</div><div style="font-size:14px;font-weight:600">${v('cand-exp')?v('cand-exp')+' years':'—'}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Resume</div><div style="font-size:14px;font-weight:600">${selectedFile?'📎 '+esc(selectedFile.name):'—'}</div></div>
+        </div>
+      </div>
+      <div style="background:var(--blue-pale);border-radius:12px;padding:18px 20px;border:1px solid rgba(56,86,219,0.15)">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:10px">Referred By</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><div style="font-size:11px;color:var(--muted)">Your Name</div><div style="font-size:14px;font-weight:600">${esc(v('emp-name'))}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Your Email</div><div style="font-size:14px;font-weight:600">${esc(v('emp-email'))}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Employee ID</div><div style="font-size:14px;font-weight:600">${esc(v('emp-id'))||'—'}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Position</div><div style="font-size:14px;font-weight:600">${esc(v('position'))}</div></div>
+        </div>
+      </div>
+      ${v('ref-notes')?`<div style="background:var(--surface);border-radius:12px;padding:16px;border:1px solid var(--border)"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Notes</div><div style="font-size:14px;color:var(--ink-3);line-height:1.6">${esc(v('ref-notes'))}</div></div>`:''}
+    </div>`;
+}
+
+function submitReferral() {
+  const id = 'XTM-REF-' + String(Math.floor(1000+Math.random()*9000));
+  const referral = {
+    id, empName:v('emp-name'), empEmail:v('emp-email'), empId:v('emp-id'),
+    candName:v('cand-name'), candEmail:v('cand-email'), candPhone:v('cand-phone'),
+    position:v('position'), company:v('cand-company'), exp:v('cand-exp'),
+    linkedin:v('cand-linkedin'), notes:v('ref-notes'), status:'New',
+    date:new Date().toISOString().split('T')[0],
+    resumeName:selectedFile?selectedFile.name:''
+  };
+  document.getElementById('loader').classList.add('show');
+  setTimeout(() => {
+    const refs = getReferrals(); refs.unshift(referral); saveReferrals(refs);
+    document.getElementById('loader').classList.remove('show');
+    document.getElementById('success-cname').textContent = referral.candName;
+    document.getElementById('success-ref-id').textContent = id;
+    showSuccess(true);
+  }, 1600);
+}
+
+function resetForm() {
+  currentStep = 1; selectedFile = null;
+  document.getElementById('file-chosen').classList.remove('show');
+  document.getElementById('resume-file').value = '';
+  ['emp-name','emp-email','emp-id','cand-name','cand-email','cand-phone','cand-company','cand-exp','cand-linkedin','ref-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('position').value = '';
+  document.querySelectorAll('.field').forEach(f => f.classList.remove('has-error'));
+  updateStepUI();
+}
+
+function handleFile(f) {
+  const ext = f.name.split('.').pop().toLowerCase();
+  if (!['pdf','docx'].includes(ext)) { showToast('Only PDF or DOCX allowed.','error'); return; }
+  if (f.size > 5*1024*1024) { showToast('File too large. Max 5MB.','error'); return; }
+  selectedFile = f;
+  document.getElementById('file-name-display').textContent = f.name;
+  document.getElementById('file-chosen').classList.add('show');
+  document.getElementById('f-resume').classList.remove('has-error');
+}
+function removeFile(e) { e.stopPropagation(); selectedFile=null; document.getElementById('file-chosen').classList.remove('show'); document.getElementById('resume-file').value=''; }
+
+let toastTimer;
+function showToast(msg, type='') { const t=document.getElementById('toast'); t.textContent=msg; t.className='show'+(type?' '+type:''); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.className='',3500); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Auto-wipe any legacy sample data from old portal versions
+  const _existing = getReferrals();
+  const _dummies = ['Arjun Mehta','Priya Nair','Ravi Kumar','Sneha Iyer','Kiran Rao','Ananya Pillai','Deepak Sharma','Lakshmi Reddy'];
+  if (_existing.some(r => _dummies.includes(r.candName))) {
+    saveReferrals(_existing.filter(r => !_dummies.includes(r.candName)));
+  }
+
+  populatePositions();
+  updateStepUI();
+  const dz=document.getElementById('dropzone'), fi=document.getElementById('resume-file');
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+  fi.addEventListener('change',()=>{if(fi.files[0])handleFile(fi.files[0]);});
+});
+</script>
+</body>
+</html>
