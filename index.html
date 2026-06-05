@@ -150,7 +150,7 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
     <div class="steps">
       <div class="step active" data-step="1"><div class="step-num">1</div><div class="step-label">Candidate</div></div>
       <div class="step-line" id="line-1-2"></div>
-      <div class="step" data-step="2"><div class="step-num">2</div><div class="step-label">Your Info</div></div>
+      <div class="step" data-step="2"><div class="step-num">2</div><div class="step-label">Referral Details</div></div>
       <div class="step-line" id="line-2-3"></div>
       <div class="step" data-step="3"><div class="step-num">3</div><div class="step-label">Review</div></div>
     </div>
@@ -186,13 +186,13 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
 
       <!-- Step 2: Referrer -->
       <div class="form-section" id="fsec-2">
-        <div class="form-section-title">Your Information</div>
-        <div class="form-section-sub">Almost done! Tell us who you are so HR can follow up with you.</div>
+        <div class="form-section-title">Referral Details</div>
+        <div class="form-section-sub">Almost done! Just a few details about you so HR knows who is referring.</div>
         <div class="field-grid">
-          <div class="field" id="f-empname"><label>Your Name <span class="req">*</span></label><input type="text" id="emp-name" placeholder="e.g. Priya Sharma"/><div class="err-msg">Please enter your name.</div></div>
-          <div class="field" id="f-empemail"><label>Your Work Email <span class="req">*</span></label><input type="email" id="emp-email" placeholder="you@xtransmatrix.com"/><div class="err-msg">Please enter a valid email address.</div></div>
-          <div class="field"><label>Employee ID <span style="color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="emp-id" placeholder="e.g. XTM-0042"/></div>
-          <div class="field" id="f-position"><label>Position Referring For <span class="req">*</span></label><select id="position"><option value="">Select a position…</option></select><div class="err-msg">Please select a position.</div></div>
+          <div class="field" id="f-empname"><label>Your Name <span class="req">*</span></label><input type="text" id="emp-name" placeholder="e.g. Rahul Sharma"/><div class="err-msg">Please enter your name.</div></div>
+          <div class="field" id="f-empemail"><label>Your Email <span class="req">*</span></label><input type="email" id="emp-email" placeholder="you@email.com"/><div class="err-msg">Please enter a valid email address.</div></div>
+          <div class="field"><label>College / Company <span style="color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="emp-id" placeholder="e.g. MIT College or Infosys"/></div>
+          <div class="field" id="f-position"><label>Position Applying For <span class="req">*</span></label><select id="position"><option value="">Select a position…</option></select><div class="err-msg">Please select a position.</div></div>
         </div>
       </div>
 
@@ -332,11 +332,11 @@ function buildReview() {
         </div>
       </div>
       <div style="background:var(--blue-pale);border-radius:12px;padding:18px 20px;border:1px solid rgba(56,86,219,0.15)">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:10px">Referred By</div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:10px">Referral Details</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div><div style="font-size:11px;color:var(--muted)">Your Name</div><div style="font-size:14px;font-weight:600">${esc(v('emp-name'))}</div></div>
-          <div><div style="font-size:11px;color:var(--muted)">Your Email</div><div style="font-size:14px;font-weight:600">${esc(v('emp-email'))}</div></div>
-          <div><div style="font-size:11px;color:var(--muted)">Employee ID</div><div style="font-size:14px;font-weight:600">${esc(v('emp-id'))||'—'}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Name</div><div style="font-size:14px;font-weight:600">${esc(v('emp-name'))}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Email</div><div style="font-size:14px;font-weight:600">${esc(v('emp-email'))}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">College / Company</div><div style="font-size:14px;font-weight:600">${esc(v('emp-id'))||'—'}</div></div>
           <div><div style="font-size:11px;color:var(--muted)">Position</div><div style="font-size:14px;font-weight:600">${esc(v('position'))}</div></div>
         </div>
       </div>
