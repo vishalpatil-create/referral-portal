@@ -143,8 +143,8 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
 <div class="page active" id="page-form">
   <div class="form-container">
     <div class="form-header">
-      <h2>Refer a Candidate</h2>
-      <p>Know someone great? Refer them in under 2 minutes. HR will be notified immediately.</p>
+      <h2>Apply Now</h2>
+      <p>Fill in your details below. Our HR team will review your profile and get back within 48 hours.</p>
     </div>
 
     <div class="steps">
@@ -192,7 +192,7 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
           <div class="field" id="f-empname"><label>Referring Name <span class="req">*</span></label><input type="text" id="emp-name" placeholder="e.g. Vishal Patil"/><div class="err-msg">Please enter your name.</div></div>
           <div class="field" id="f-empemail"><label>Referring Employee Email ID <span class="req">*</span></label><input type="email" id="emp-email" placeholder="you@xtransmatrix.com"/><div class="err-msg">Please enter a valid email address.</div></div>
           <div class="field"><label>Employee ID <span style="color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="emp-id" placeholder="e.g. XTM-0042"/></div>
-          <div class="field" id="f-position"><label>Position Applying For <span class="req">*</span></label><select id="position"><option value="">Select a position…</option></select><div class="err-msg">Please select a position.</div></div>
+          <div class="field" id="f-position"><label>Position Applied For <span class="req">*</span></label><select id="position"><option value="">Select a position…</option></select><div class="err-msg">Please select a position.</div></div>
         </div>
       </div>
 
@@ -336,7 +336,6 @@ function buildReview() {
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <div><div style="font-size:11px;color:var(--muted)">Referring Name</div><div style="font-size:14px;font-weight:600">${esc(v('emp-name'))}</div></div>
           <div><div style="font-size:11px;color:var(--muted)">Referring Email</div><div style="font-size:14px;font-weight:600">${esc(v('emp-email'))}</div></div>
-          <div><div style="font-size:11px;color:var(--muted)">Employee ID</div><div style="font-size:14px;font-weight:600">${esc(v('emp-id'))||'—'}</div></div>
           <div><div style="font-size:11px;color:var(--muted)">Position</div><div style="font-size:14px;font-weight:600">${esc(v('position'))}</div></div>
         </div>
       </div>
@@ -358,36 +357,51 @@ function submitReferral() {
 
   document.getElementById('loader').classList.add('show');
 
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      // Also save locally for HR dashboard
-      const referral = { ...payload, id: data.refId, status: 'New', date: new Date().toISOString().split('T')[0] };
+  // Read file as base64 then submit
+  const doSubmit = (base64Data, mimeType) => {
+    const fullPayload = { ...payload, resumeBase64: base64Data, resumeMime: mimeType };
+
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(fullPayload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        const referral = { ...payload, id: data.refId, status: 'New', date: new Date().toISOString().split('T')[0] };
+        const refs = getReferrals(); refs.unshift(referral); saveReferrals(refs);
+        document.getElementById('loader').classList.remove('show');
+        document.getElementById('success-cname').textContent = payload.candName;
+        document.getElementById('success-ref-id').textContent = data.refId;
+        showSuccess(true);
+      } else {
+        throw new Error(data.error || 'Submission failed');
+      }
+    })
+    .catch(err => {
+      console.warn('Apps Script error:', err);
+      const id = 'XTM-REF-' + String(Math.floor(1000+Math.random()*9000));
+      const referral = { ...payload, id, status: 'New', date: new Date().toISOString().split('T')[0] };
       const refs = getReferrals(); refs.unshift(referral); saveReferrals(refs);
       document.getElementById('loader').classList.remove('show');
       document.getElementById('success-cname').textContent = payload.candName;
-      document.getElementById('success-ref-id').textContent = data.refId;
+      document.getElementById('success-ref-id').textContent = id;
       showSuccess(true);
-    } else {
-      throw new Error(data.error || 'Submission failed');
-    }
-  })
-  .catch(err => {
-    // Fallback: save locally even if Apps Script fails
-    console.warn('Apps Script error:', err);
-    const id = 'XTM-REF-' + String(Math.floor(1000+Math.random()*9000));
-    const referral = { ...payload, id, status: 'New', date: new Date().toISOString().split('T')[0] };
-    const refs = getReferrals(); refs.unshift(referral); saveReferrals(refs);
-    document.getElementById('loader').classList.remove('show');
-    document.getElementById('success-cname').textContent = payload.candName;
-    document.getElementById('success-ref-id').textContent = id;
-    showSuccess(true);
-    showToast('Saved locally. Email notification may be delayed.', '');
-  });
+      showToast('Saved locally. Email notification may be delayed.', '');
+    });
+  };
+
+  if (selectedFile) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64 = e.target.result.split(',')[1];
+      const mime = selectedFile.type || (selectedFile.name.endsWith('.pdf') ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+      doSubmit(base64, mime);
+    };
+    reader.readAsDataURL(selectedFile);
+  } else {
+    doSubmit('', '');
+  }
 }
 
 function resetForm() {
