@@ -18,7 +18,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min-height:100vh;}
 
-/* TOPBAR */
 #topbar{
   position:fixed;top:0;left:0;right:0;z-index:100;height:64px;
   background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);
@@ -29,18 +28,15 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
 .logo-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--blue-light));display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:800;}
 .topbar-tagline{font-size:13px;color:var(--muted);font-weight:500;}
 
-/* PAGES */
 .page{display:none;padding-top:64px;min-height:100vh;}
 .page.active{display:block;}
 
-/* FORM */
 #page-form{background:var(--surface);}
 .form-container{max-width:780px;margin:0 auto;padding:48px 24px 80px;}
 .form-header{margin-bottom:40px;}
 .form-header h2{font-family:var(--font-head);font-size:36px;font-weight:800;color:var(--ink);margin-bottom:8px;}
 .form-header p{color:var(--muted);font-size:16px;}
 
-/* Steps */
 .steps{display:flex;align-items:center;margin-bottom:40px;}
 .step{display:flex;align-items:center;gap:10px;flex:1;}
 .step:last-child{flex:none;}
@@ -93,7 +89,6 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
 .btn-green{background:var(--green);color:white;}
 .btn-green:hover{background:var(--green-dark);transform:translateY(-1px);}
 
-/* SUCCESS */
 #page-success{background:linear-gradient(160deg,#f0f3ff,#f7f9fc);}
 .success-container{max-width:520px;margin:0 auto;padding:80px 24px;text-align:center;}
 .success-icon-wrap{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--green),#a3c06a);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 32px;box-shadow:0 16px 40px rgba(130,156,75,0.3);animation:successPop 0.5s cubic-bezier(0.34,1.56,0.64,1);}
@@ -106,7 +101,6 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
 .success-note{background:var(--blue-pale);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--blue);font-weight:500;margin-bottom:32px;border:1px solid rgba(56,86,219,0.15);}
 .success-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
 
-/* LOADER & TOAST */
 #loader{position:fixed;inset:0;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
 #loader.show{display:flex;}
 .spinner{width:44px;height:44px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--blue);animation:spin 0.8s linear infinite;}
@@ -139,7 +133,6 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
 <div id="loader"><div class="spinner"></div><p>Submitting your referral…</p></div>
 <div id="toast"></div>
 
-<!-- REFERRAL FORM -->
 <div class="page active" id="page-form">
   <div class="form-container">
     <div class="form-header">
@@ -161,12 +154,40 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
         <div class="form-section-title">Candidate Information</div>
         <div class="form-section-sub">Tell us about the person you're referring to XTransMatrix.</div>
         <div class="field-grid">
-          <div class="field" id="f-cname"><label>Candidate Name <span class="req">*</span></label><input type="text" id="cand-name" placeholder="e.g. Ravi Menon"/><div class="err-msg">Please enter the candidate's name.</div></div>
-          <div class="field" id="f-cemail"><label>Candidate Email <span class="req">*</span></label><input type="email" id="cand-email" placeholder="candidate@email.com"/><div class="err-msg">Please enter a valid email address.</div></div>
-          <div class="field" id="f-cphone"><label>Phone Number <span class="req">*</span></label><input type="tel" id="cand-phone" placeholder="+91 98765 43210"/><div class="err-msg">Please enter a valid phone number.</div></div>
-          <div class="field"><label>Current Company</label><input type="text" id="cand-company" placeholder="e.g. Infosys Ltd."/></div>
-          <div class="field"><label>Years of Experience</label><input type="number" id="cand-exp" placeholder="e.g. 4" min="0" max="40"/></div>
-          <div class="field"><label>LinkedIn Profile URL</label><input type="url" id="cand-linkedin" placeholder="https://linkedin.com/in/…"/></div>
+          <div class="field" id="f-cname">
+            <label>Candidate Name <span class="req">*</span></label>
+            <input type="text" id="cand-name" placeholder="e.g. Ravi Menon"/>
+            <div class="err-msg">Please enter the candidate's name.</div>
+          </div>
+          <div class="field" id="f-cemail">
+            <label>Candidate Email <span class="req">*</span></label>
+            <input type="email" id="cand-email" placeholder="candidate@email.com"/>
+            <div class="err-msg">Please enter a valid email address.</div>
+          </div>
+          <div class="field" id="f-cphone">
+            <label>Phone Number <span class="req">*</span></label>
+            <input type="tel" id="cand-phone" placeholder="+91 98765 43210"/>
+            <div class="err-msg">Please enter a valid phone number.</div>
+          </div>
+          <div class="field" id="f-clocation">
+            <label>Current Location <span class="req">*</span></label>
+            <input type="text" id="cand-location" placeholder="e.g. Bangalore, Karnataka"/>
+            <div class="err-msg">Please enter the candidate's current location.</div>
+          </div>
+          <div class="field" id="f-preflocation">
+            <label>Preferred Office Location <span class="req">*</span></label>
+            <select id="cand-pref-location">
+              <option value="">Select preferred location…</option>
+              <option>Bengaluru</option>
+              <option>Mangalore</option>
+              <option>Noida</option>
+            </select>
+            <div class="err-msg">Please select a preferred office location.</div>
+          </div>
+          <div class="field">
+            <label>LinkedIn Profile URL</label>
+            <input type="url" id="cand-linkedin" placeholder="https://linkedin.com/in/…"/>
+          </div>
         </div>
         <div class="field-grid single mt-4">
           <div class="field" id="f-resume">
@@ -180,7 +201,10 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
             <div class="file-chosen" id="file-chosen"><span>📎</span><span class="file-chosen-name" id="file-name-display"></span><button class="file-remove" onclick="removeFile(event)">×</button></div>
             <div class="err-msg">Please upload the candidate's resume.</div>
           </div>
-          <div class="field"><label>Why should we consider this candidate?</label><textarea id="ref-notes" placeholder="Share why this person would be a great fit for XTransMatrix…"></textarea></div>
+          <div class="field">
+            <label>Why should we consider this candidate?</label>
+            <textarea id="ref-notes" placeholder="Share why this person would be a great fit for XTransMatrix…"></textarea>
+          </div>
         </div>
       </div>
 
@@ -189,10 +213,25 @@ body{font-family:var(--font-body);background:var(--surface);color:var(--ink);min
         <div class="form-section-title">Referral Details</div>
         <div class="form-section-sub">Almost done! Just a few details about you so HR knows who is referring.</div>
         <div class="field-grid">
-          <div class="field" id="f-empname"><label>Referring Name <span class="req">*</span></label><input type="text" id="emp-name" placeholder="e.g. Vishal Patil"/><div class="err-msg">Please enter your name.</div></div>
-          <div class="field" id="f-empemail"><label>Referring Employee Email ID <span class="req">*</span></label><input type="email" id="emp-email" placeholder="you@xtransmatrix.com"/><div class="err-msg">Please enter a valid email address.</div></div>
-          <div class="field"><label>Employee ID <span style="color:var(--muted);font-weight:400">(optional)</span></label><input type="text" id="emp-id" placeholder="e.g. XTM-0042"/></div>
-          <div class="field" id="f-position"><label>Position Applied For <span class="req">*</span></label><select id="position"><option value="">Select a position…</option></select><div class="err-msg">Please select a position.</div></div>
+          <div class="field" id="f-empname">
+            <label>Referring Name <span class="req">*</span></label>
+            <input type="text" id="emp-name" placeholder="e.g. Vishal Patil"/>
+            <div class="err-msg">Please enter your name.</div>
+          </div>
+          <div class="field" id="f-empemail">
+            <label>Referring Employee Email ID <span class="req">*</span></label>
+            <input type="email" id="emp-email" placeholder="you@xtransmatrix.com"/>
+            <div class="err-msg">Please enter a valid email address.</div>
+          </div>
+          <div class="field">
+            <label>Employee ID <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+            <input type="text" id="emp-id" placeholder="e.g. XTM-0042"/>
+          </div>
+          <div class="field" id="f-position">
+            <label>Position Applied For <span class="req">*</span></label>
+            <select id="position"><option value="">Select a position…</option></select>
+            <div class="err-msg">Please select a position.</div>
+          </div>
         </div>
       </div>
 
@@ -295,7 +334,7 @@ function validatePhone(id, wrapId) {
 }
 function validateSelect(id, wrapId) {
   const el=document.getElementById(id), w=document.getElementById(wrapId);
-  if (!el.value) { w.classList.add('has-error'); w.querySelector('.err-msg').textContent='Please select a position.'; return false; }
+  if (!el.value) { w.classList.add('has-error'); w.querySelector('.err-msg').textContent='Please select an option.'; return false; }
   w.classList.remove('has-error'); return true;
 }
 function validateFile() {
@@ -306,8 +345,19 @@ function validateFile() {
 
 function validateStep(step) {
   let ok = true;
-  if (step === 1) { ok=validateField('cand-name','f-cname',"Please enter the candidate's name.")&&ok; ok=validateEmail('cand-email','f-cemail')&&ok; ok=validatePhone('cand-phone','f-cphone')&&ok; ok=validateFile()&&ok; }
-  if (step === 2) { ok=validateField('emp-name','f-empname','Please enter your name.')&&ok; ok=validateEmail('emp-email','f-empemail')&&ok; ok=validateSelect('position','f-position')&&ok; }
+  if (step === 1) {
+    ok = validateField('cand-name','f-cname',"Please enter the candidate's name.") && ok;
+    ok = validateEmail('cand-email','f-cemail') && ok;
+    ok = validatePhone('cand-phone','f-cphone') && ok;
+    ok = validateField('cand-location','f-clocation',"Please enter the candidate's current location.") && ok;
+    ok = validateSelect('cand-pref-location','f-preflocation') && ok;
+    ok = validateFile() && ok;
+  }
+  if (step === 2) {
+    ok = validateField('emp-name','f-empname','Please enter your name.') && ok;
+    ok = validateEmail('emp-email','f-empemail') && ok;
+    ok = validateSelect('position','f-position') && ok;
+  }
   return ok;
 }
 
@@ -323,11 +373,11 @@ function buildReview() {
       <div style="background:var(--green-pale);border-radius:12px;padding:18px 20px;border:1px solid rgba(130,156,75,0.2)">
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--green-dark);margin-bottom:10px">Candidate Information</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div><div style="font-size:11px;color:var(--muted)">Referring Name</div><div style="font-size:14px;font-weight:600">${esc(v('cand-name'))}</div></div>
-          <div><div style="font-size:11px;color:var(--muted)">Referring Email</div><div style="font-size:14px;font-weight:600">${esc(v('cand-email'))}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Full Name</div><div style="font-size:14px;font-weight:600">${esc(v('cand-name'))}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Email</div><div style="font-size:14px;font-weight:600">${esc(v('cand-email'))}</div></div>
           <div><div style="font-size:11px;color:var(--muted)">Phone</div><div style="font-size:14px;font-weight:600">${esc(v('cand-phone'))}</div></div>
-          <div><div style="font-size:11px;color:var(--muted)">Company</div><div style="font-size:14px;font-weight:600">${esc(v('cand-company'))||'—'}</div></div>
-          <div><div style="font-size:11px;color:var(--muted)">Experience</div><div style="font-size:14px;font-weight:600">${v('cand-exp')?v('cand-exp')+' years':'—'}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Current Location</div><div style="font-size:14px;font-weight:600">${esc(v('cand-location'))}</div></div>
+          <div><div style="font-size:11px;color:var(--muted)">Preferred Office Location</div><div style="font-size:14px;font-weight:600">${esc(v('cand-pref-location'))}</div></div>
           <div><div style="font-size:11px;color:var(--muted)">Resume</div><div style="font-size:14px;font-weight:600">${selectedFile?'📎 '+esc(selectedFile.name):'—'}</div></div>
         </div>
       </div>
@@ -343,28 +393,23 @@ function buildReview() {
     </div>`;
 }
 
-// ⚠️ Replace this with your deployed Apps Script Web App URL
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhyWdXw7t5vIP419SpnElZ0mpbBOnaAHMamGWI8TUKEEHVL2QFH60ZQR8qS7HS2B2BPw/exec';
 
 function submitReferral() {
   const payload = {
-    empName:v('emp-name'), empEmail:v('emp-email'), empId:v('emp-id'),
-    candName:v('cand-name'), candEmail:v('cand-email'), candPhone:v('cand-phone'),
-    position:v('position'), company:v('cand-company'), exp:v('cand-exp'),
-    linkedin:v('cand-linkedin'), notes:v('ref-notes'),
-    resumeName:selectedFile?selectedFile.name:''
+    empName: v('emp-name'), empEmail: v('emp-email'), empId: v('emp-id'),
+    candName: v('cand-name'), candEmail: v('cand-email'), candPhone: v('cand-phone'),
+    location: v('cand-location'), prefLocation: v('cand-pref-location'),
+    position: v('position'),
+    linkedin: v('cand-linkedin'), notes: v('ref-notes'),
+    resumeName: selectedFile ? selectedFile.name : ''
   };
 
   document.getElementById('loader').classList.add('show');
 
-  // Read file as base64 then submit
   const doSubmit = (base64Data, mimeType) => {
     const fullPayload = { ...payload, resumeBase64: base64Data, resumeMime: mimeType };
-
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(fullPayload)
-    })
+    fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(fullPayload) })
     .then(res => res.json())
     .then(data => {
       if (data.success) {
@@ -380,7 +425,7 @@ function submitReferral() {
     })
     .catch(err => {
       console.warn('Apps Script error:', err);
-      const id = 'XTM-REF-' + String(Math.floor(1000+Math.random()*9000));
+      const id = 'XTM-REF-' + String(Math.floor(1000 + Math.random() * 9000));
       const referral = { ...payload, id, status: 'New', date: new Date().toISOString().split('T')[0] };
       const refs = getReferrals(); refs.unshift(referral); saveReferrals(refs);
       document.getElementById('loader').classList.remove('show');
@@ -408,7 +453,8 @@ function resetForm() {
   currentStep = 1; selectedFile = null;
   document.getElementById('file-chosen').classList.remove('show');
   document.getElementById('resume-file').value = '';
-  ['emp-name','emp-email','emp-id','cand-name','cand-email','cand-phone','cand-company','cand-exp','cand-linkedin','ref-notes'].forEach(id => document.getElementById(id).value = '');
+  ['emp-name','emp-email','emp-id','cand-name','cand-email','cand-phone','cand-location','cand-linkedin','ref-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cand-pref-location').value = '';
   document.getElementById('position').value = '';
   document.querySelectorAll('.field').forEach(f => f.classList.remove('has-error'));
   updateStepUI();
@@ -429,13 +475,11 @@ let toastTimer;
 function showToast(msg, type='') { const t=document.getElementById('toast'); t.textContent=msg; t.className='show'+(type?' '+type:''); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.className='',3500); }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Auto-wipe any legacy sample data from old portal versions
   const _existing = getReferrals();
   const _dummies = ['Arjun Mehta','Priya Nair','Ravi Kumar','Sneha Iyer','Kiran Rao','Ananya Pillai','Deepak Sharma','Lakshmi Reddy'];
   if (_existing.some(r => _dummies.includes(r.candName))) {
     saveReferrals(_existing.filter(r => !_dummies.includes(r.candName)));
   }
-
   populatePositions();
   updateStepUI();
   const dz=document.getElementById('dropzone'), fi=document.getElementById('resume-file');
