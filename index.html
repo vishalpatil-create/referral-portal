@@ -408,8 +408,16 @@ function submitReferral() {
 
   const doSubmit = (base64Data, mimeType) => {
     const fullPayload = { ...payload, resumeBase64: base64Data, resumeMime: mimeType };
-    fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify(fullPayload) })
-    .then(res => res.json())
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(fullPayload),
+      redirect: 'follow'
+    })
+    .then(res => {
+      const ct = res.headers.get('content-type') || '';
+      if (ct.includes('json')) return res.json();
+      return res.text().then(t => { try { return JSON.parse(t); } catch(e) { return { success: false, error: t }; } });
+    })
     .then(data => {
       if (data.success) {
         const referral = { ...payload, id: data.refId, status: 'New', date: new Date().toISOString().split('T')[0] };
